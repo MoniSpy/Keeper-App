@@ -1,6 +1,7 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import { getNotes } from "./persistance/notes.js";
 
 
 
@@ -13,8 +14,10 @@ const port = 3000;
 //Middlewear
 app.use(cors());
 
-app.get('/', (req, res) => {
-    res.send('Hello from our server!')
+app.get('/', async (req, res) => {
+    // let notes=[{title:"fff", content:"hhhh"}];
+    let notes= await getNotes();
+    res.send(notes);
 })
 
 //SET UP PORT

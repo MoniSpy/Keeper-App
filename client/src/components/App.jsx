@@ -5,19 +5,24 @@ import Note from "./Note";
 import CreateArea from "./CreateArea";
 import axios from "axios";
 
+const BASE_URL= "http://localhost:3000"
 
-//data will be the string we send from our server
-const apiCall = () => {
-  axios.get('http://localhost:3000').then((data) => {
-    //this console.log will be in our frontend console
-    console.log(data)
-  })
-}
 
 
 function App() {
 
-  const [notes, setNotes]=useState([]);
+const [notes, setNotes]=useState([]);
+
+//data will be the string we send from our server
+const apiCall = () => {
+  axios.get(BASE_URL).then((res) => {
+    setNotes(res.data);
+    //this console.log will be in our frontend console
+    console.log(res.data);
+  })
+}
+
+
 
   function addNote(note){
     console.log(note);
