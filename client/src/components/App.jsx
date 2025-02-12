@@ -5,7 +5,11 @@ import Note from "./Note";
 import CreateArea from "./CreateArea";
 import axios from "axios";
 
-const BASE_URL= "http://localhost:3000"
+
+
+
+const BASE_URL= "http://localhost:3000";
+
 
 
 
@@ -14,6 +18,13 @@ function App() {
 const [notes, setNotes]=useState([]);
 
 //data will be the string we send from our server
+
+function APICall (){
+  axios.get(BASE_URL+"/notes").then((res) => {
+    setNotes(res.data);
+  })
+}
+ 
 const apiCall = () => {
   axios.get(BASE_URL).then((res) => {
     setNotes(res.data);
@@ -24,16 +35,19 @@ const apiCall = () => {
 
 
 
-  function addNote(note){
-    console.log(note);
-    setNotes(prevNotes => {
-     return  [...prevNotes, note];
-    })
+
+
+async function addNote(note){
+  axios.post("http://localhost:3000/notes" , note);
+  console.log(note);
+  setNotes(prevNotes => {
+    return  [...prevNotes, note];
+   })    
   }
 
   function deleteNote(id){
     setNotes(prevNotes => {
-      return prevNotes.filter((noteItem,index) => {
+      return prevNotes.filter((noteItem    ,index) => {
         return index !== id;
       });
     });
@@ -41,11 +55,11 @@ const apiCall = () => {
 
   return (
     <div>
+    {APICall()}
       <Header />
       <CreateArea 
         onAdd={addNote}
       />
-
       {notes.map((noteItem, index )=> {
         return (
           <Note 
@@ -58,7 +72,6 @@ const apiCall = () => {
           
         );
     })}
-    <button onClick={apiCall}>Make API Call</button>
       <Footer />
     </div>
   );

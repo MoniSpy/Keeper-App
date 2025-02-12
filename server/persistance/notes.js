@@ -1,6 +1,7 @@
 import pg from "pg";
 import env from "dotenv";
 
+
 env.config();
 
 const db = new pg.Client({
@@ -9,9 +10,8 @@ const db = new pg.Client({
     database: process.env.PG_DATABASE,
     password: process.env.PG_PASSWORD,
     port: process.env.PG_PORT,
-  });
+});
 
-  // Conect to database
 db.connect();
 
 async function getNotes(){
@@ -19,4 +19,14 @@ async function getNotes(){
     return result.rows;
 }
 
-export {getNotes};
+async function createNote(title, content){
+    const result=await db.query('INSERT INTO notes (title,content) VALUES ($1,$2) RETURNING *',[title, content]);
+    return result.rows;
+}
+
+async function deleteNotes(id) {
+   
+    
+}
+
+export {getNotes, createNote, deleteNotes};
