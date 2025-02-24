@@ -18,12 +18,10 @@ function App() {
 const [notes, setNotes]=useState();
 
 
-//data will be the string we send from our server
 
 useEffect(()=>{
   if (!notes){
     axios.get(BASE_URL+"/notes").then((res)=>{
-      console.log(res.data);
       setNotes(res.data || []);
     });
   }
@@ -31,16 +29,14 @@ useEffect(()=>{
 
 
 async function addNote(note){
-  const response= await axios.post("http://localhost:3000/notes", note);
-    console.log(response.data);
+  const response= await axios.post(BASE_URL+"/notes", note);
     setNotes(prevNotes => {
     return  [...prevNotes, response.data];
    }) 
   }
 
   async function deleteNote(id){
-   const response=await axios.delete("http://localhost:3000/notes/delete/"+id);
-    console.log(response.data);
+   const response=await axios.delete(BASE_URL+"/notes/delete/"+id);
    setNotes(prevNotes => {
       return prevNotes.filter((noteItem ,index) => {
         return noteItem.id !== id;

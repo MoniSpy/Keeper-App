@@ -16,12 +16,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
+
+//Home page
 app.get("/notes", async (req, res) => {
     let notes= await getNotes();
     res.send(notes);
 })
 
-//add notes 
+//Add notes 
 app.post("/notes" , async (req,res) =>{
     const title=req.body.title;
     const content=req.body.content;
@@ -29,6 +31,7 @@ app.post("/notes" , async (req,res) =>{
     res.send(notes[0]);  
 });
 
+//Delete notes
 app.delete("/notes/delete/:id", async (req, res) => {
     const deletedNoteId=req.params.id;
     let deletedNote=await deleteNotes(deletedNoteId);
