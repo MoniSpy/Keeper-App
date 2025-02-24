@@ -3,6 +3,7 @@ import axios from "axios";
 import cors from "cors";
 import { getNotes } from "./persistance/notes.js";
 import {createNote} from "./persistance/notes.js";
+import { deleteNotes } from "./persistance/notes.js";
 import bodyParser from "body-parser";
 
 
@@ -24,11 +25,14 @@ app.get("/notes", async (req, res) => {
 app.post("/notes" , async (req,res) =>{
     const title=req.body.title;
     const content=req.body.content;
-    let notes=await createNote(title,content)
-    res.send(notes);
+    let notes=await createNote(title,content);
+    res.send(notes[0]);  
 });
 
-app.delete("/notes:id", async (req, res) => {
+app.delete("/notes/delete/:id", async (req, res) => {
+    const deletedNoteId=req.params.id;
+    let deletedNote=await deleteNotes(deletedNoteId);
+    return res.status(201).json();
 
 });
 

@@ -20,13 +20,15 @@ async function getNotes(){
 }
 
 async function createNote(title, content){
-    const result=await db.query('INSERT INTO notes (title,content) VALUES ($1,$2) RETURNING *',[title, content]);
+    const result=await db.query("INSERT INTO notes (title,content) VALUES ($1,$2) RETURNING *",[title, content]);
     return result.rows;
 }
 
 async function deleteNotes(id) {
-   
-    
+   const result =await db.query("DELETE from notes WHERE id = $1 RETURNING *",
+    [id]
+   );
+    return result.rows;
 }
 
 export {getNotes, createNote, deleteNotes};

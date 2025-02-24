@@ -30,12 +30,10 @@ function CreateArea(props){
 
     function submitNote(event){   
         props.onAdd(note);
-        //Clear form after submited
         setNote({
             title :"",
             content :""
         });
-        //Prevent form's default refreshing when button is pressed 
         event.preventDefault();  
     }
 

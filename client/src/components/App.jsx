@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -15,61 +15,55 @@ const BASE_URL= "http://localhost:3000";
 
 function App() {
 
-const [notes, setNotes]=useState([]);
+const [notes, setNotes]=useState();
+
 
 //data will be the string we send from our server
 
-function APICall (){
-  axios.get(BASE_URL+"/notes").then((res) => {
-    setNotes(res.data);
-  })
-}
- 
-const apiCall = () => {
-  axios.get(BASE_URL).then((res) => {
-    setNotes(res.data);
-    //this console.log will be in our frontend console
-    console.log(res.data);
-  })
-}
-
-
-
+useEffect(()=>{
+  if (!notes){
+    axios.get(BASE_URL+"/notes").then((res)=>{
+      console.log(res.data);
+      setNotes(res.data || []);
+    });
+  }
+},[notes]);
 
 
 async function addNote(note){
-  axios.post("http://localhost:3000/notes" , note);
-  console.log(note);
-  setNotes(prevNotes => {
-    return  [...prevNotes, note];
-   })    
+  const response= await axios.post("http://localhost:3000/notes", note);
+    console.log(response.data);
+    setNotes(prevNotes => {
+    return  [...prevNotes, response.data];
+   }) 
   }
 
-  function deleteNote(id){
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem    ,index) => {
-        return index !== id;
+  async function deleteNote(id){
+   const response=await axios.delete("http://localhost:3000/notes/delete/"+id);
+    console.log(response.data);
+   setNotes(prevNotes => {
+      return prevNotes.filter((noteItem ,index) => {
+        return noteItem.id !== id;
       });
     });
   }
 
+
   return (
     <div>
-    {APICall()}
       <Header />
       <CreateArea 
         onAdd={addNote}
       />
-      {notes.map((noteItem, index )=> {
+      {notes?.map((noteItem, index )=> {
         return (
           <Note 
             key={index}
-            id={index}
+            id={noteItem.id}
             title={noteItem.title}
             content={noteItem.content}
             onDelete={deleteNote}
-          />
-          
+          /> 
         );
     })}
       <Footer />
