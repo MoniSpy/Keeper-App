@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -6,33 +6,44 @@ import CreateArea from "./CreateArea";
 import axios from "axios";
 
 
-//data will be the string we send from our server
-const apiCall = () => {
-  axios.get('http://localhost:3000').then((data) => {
-    //this console.log will be in our frontend console
-    console.log(data)
-  })
-}
+
+
+const BASE_URL= "http://localhost:3000";
+
+
 
 
 function App() {
 
-  const [notes, setNotes]=useState([]);
+const [notes, setNotes]=useState();
 
-  function addNote(note){
-    console.log(note);
+
+
+useEffect(()=>{
+  if (!notes){
+    axios.get(BASE_URL+"/notes").then((res)=>{
+      setNotes(res.data || []);
+    });
+  }
+},[notes]);
+
+
+async function addNote(note){
+  const response= await axios.post(BASE_URL+"/notes", note);
     setNotes(prevNotes => {
-     return  [...prevNotes, note];
-    })
+    return  [...prevNotes, response.data];
+   }) 
   }
 
-  function deleteNote(id){
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem,index) => {
-        return index !== id;
+  async function deleteNote(id){
+   const response=await axios.delete(BASE_URL+"/notes/delete/"+id);
+   setNotes(prevNotes => {
+      return prevNotes.filter((noteItem ,index) => {
+        return noteItem.id !== id;
       });
     });
   }
+
 
   return (
     <div>
@@ -40,20 +51,17 @@ function App() {
       <CreateArea 
         onAdd={addNote}
       />
-
-      {notes.map((noteItem, index )=> {
+      {notes?.map((noteItem, index )=> {
         return (
           <Note 
             key={index}
-            id={index}
+            id={noteItem.id}
             title={noteItem.title}
             content={noteItem.content}
             onDelete={deleteNote}
-          />
-          
+          /> 
         );
     })}
-    <button onClick={apiCall}>Make API Call</button>
       <Footer />
     </div>
   );

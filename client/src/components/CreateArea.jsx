@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { Fab } from "@mui/material";
@@ -17,7 +18,7 @@ function CreateArea(props){
 
     function handleOnChange(event){
         console.log("set clicked=true");
-        isClicked=true;
+        const isClicked=true;
         const { name, value }= event.target;
         setNote ( prevNote => {
             return {
@@ -29,13 +30,11 @@ function CreateArea(props){
 
     function submitNote(event){   
         props.onAdd(note);
-        //Clear form after submited
         setNote({
             title :"",
             content :""
         });
-        //Prevent form's default refreshing when button is pressed 
-        event.preventDefault();
+        event.preventDefault();  
     }
 
     function expand(){
